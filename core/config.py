@@ -8,10 +8,6 @@ if TYPE_CHECKING:
 
 DIR = Path(__file__).absolute().parent.parent
 CORE_DIR = Path(__file__).absolute().parent
-LOCALES_DIR = f'{CORE_DIR}/locales'
-I18N_DOMAIN = 'messages'
-PHOTO_PROOF_DIR = f'{DIR}/assets/photo-proof/'
-
 
 class EnvBaseSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8',extra="ignore")
@@ -54,5 +50,3 @@ class Settings(DBSettings, AlembicSettings):
 
 
 settings = Settings()
-
-print(settings.dict())  # Это выведет все загруженные параметры, включая SECRET_KEY
