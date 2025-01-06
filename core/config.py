@@ -22,8 +22,8 @@ class DBSettings(EnvBaseSettings):
     DB_HOST: str = 'db'
     DB_PORT: int = 5433
     DB_USER: str = 'postgres'
-    DB_PASS: str | None= None
-    DB_NAME: str = 'lampa_db'
+    DB_PASS: str | None = '12345'
+    DB_NAME: str = 'poker_db'
 
     @property
     def database_url(self) -> URL | str:
@@ -37,19 +37,6 @@ class DBSettings(EnvBaseSettings):
             return f"postgresql://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         return f"postgresql://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-
-class CacheSettings(EnvBaseSettings):
-    REDIS_HOST: str = '127.0.0.1'
-    REDIS_PORT: int = 6379
-    REDIS_PASS: str | None= None
-
-    @property
-    def redis_url(self) -> str:
-        if self.REDIS_PASS:
-            return f'redis://{self.REDIS_PASS}@{self.REDIS_HOST}:{self.REDIS_PORT}/0'
-        return f'redis://{self.REDIS_HOST}:{self.REDIS_PORT}/0'
-
-
 class AlembicSettings(EnvBaseSettings):
     DATABASE_URL_ALEMBIC: str | None = None
     ALEMBIC_CONFIG_PATH: str = str(Path(__file__).parent.parent / 'alembic.ini')
@@ -61,7 +48,7 @@ class AlembicSettings(EnvBaseSettings):
         return self.DATABASE_URL_ALEMBIC
 
 
-class Settings(CacheSettings, DBSettings, AlembicSettings):
+class Settings(DBSettings, AlembicSettings):
     DEBUG: bool = False
     AUTH_SECRET_KEY: str
 

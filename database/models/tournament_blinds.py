@@ -1,13 +1,15 @@
 from .types import *
+from .blinds import Blinds
 from .tournaments import Tournaments
 
-class Games(Base):
-    __tablename__ = 'games'
+class TournamentBlinds(Base):
+    __tablename__ = 'tournament_blinds'
 
     id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
     tournament_id: int = Column(Integer, index=True)
-    started_at: datetime = Column(DateTime, default=datetime.utcnow)
+    blind_id: int = Column(Integer, index=True)
     created_at: datetime = Column(DateTime, default=datetime.utcnow)
     updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     tournaments: Mapped[Tournaments] = relationship(Tournaments)
+    blind: Mapped[Blinds] = relationship(Blinds)
