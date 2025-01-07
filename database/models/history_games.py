@@ -6,13 +6,13 @@ class HistoryGames(Base):
     __tablename__ = 'history_games'
 
     id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    tournament_id: int = Column(Integer, index=True)
-    win_hero_id: int = Column(Integer, index=True)
-    win_total: int = Column(Integer)
-    started_at: datetime = Column(DateTime, default=datetime.utcnow)
-    ended_at: datetime = Column(DateTime, default=datetime.utcnow)
-    created_at: datetime = Column(DateTime, default=datetime.utcnow)
-    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    tournament_id: int = Column(Integer, index=True, nullable=False)
+    win_hero_id: int = Column(Integer, index=True, nullable=False)
+    win_total: int = Column(Integer, nullable=False)
+    started_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    ended_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     tournaments: Mapped[Tournaments] = relationship(Tournaments)
     heroes: Mapped[Heroes] = relationship(Heroes)

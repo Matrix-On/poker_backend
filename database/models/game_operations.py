@@ -6,10 +6,10 @@ class GameOperations(Base):
     __tablename__ = 'game_operations'
 
     id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    game_id: int = Column(Integer, index=True)
-    operation: GameOperations = Column("operation", Enum(GameOperations))
-    success_at: datetime = Column(DateTime, default=datetime.utcnow)
-    created_at: datetime = Column(DateTime, default=datetime.utcnow)
-    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    game_id: int = Column(Integer, index=True, nullable=False)
+    operation: GameOperations = Column("operation", Enum(GameOperations), nullable=False)
+    success_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     games: Mapped[Games] = relationship(Games)
