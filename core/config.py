@@ -15,8 +15,8 @@ class EnvBaseSettings(BaseSettings):
 
 
 class DBSettings(EnvBaseSettings):
-    DB_HOST: str = 'db'
-    DB_PORT: int = 5433
+    DB_HOST: str = 'localhost'
+    DB_PORT: int = 5434
     DB_USER: str = 'postgres'
     DB_PASS: str | None = '12345'
     DB_NAME: str = 'poker_db'
@@ -34,14 +34,14 @@ class DBSettings(EnvBaseSettings):
         return f"postgresql://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
 class AlembicSettings(EnvBaseSettings):
-    DATABASE_URL_ALEMBIC: str | None = None
+    ALEMBIC_DATABASE_URL: str | None = None
     ALEMBIC_CONFIG_PATH: str = str(Path(__file__).parent.parent / 'alembic.ini')
 
     @property
     def database_url_alembic(self) -> str:
-        if not self.DATABASE_URL_ALEMBIC:
+        if not self.ALEMBIC_DATABASE_URL:
             raise ValueError("Alembic database URL is not set")
-        return self.DATABASE_URL_ALEMBIC
+        return self.ALEMBIC_DATABASE_URL
 
 
 class Settings(DBSettings, AlembicSettings):

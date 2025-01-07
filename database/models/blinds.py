@@ -3,7 +3,7 @@ from .types import *
 class Blinds(Base):
     __tablename__ = 'blinds'
 
-    id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     small_blind: int = Column(Integer, default=0)
     big_blind: int = Column(Integer, default=0)
     ante: int = Column(Integer, default=0)

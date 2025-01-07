@@ -5,7 +5,7 @@ from .heroes import Heroes
 class HistoryGames(Base):
     __tablename__ = 'history_games'
 
-    id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     tournament_id: int = Column(Integer, index=True)
     win_hero_id: int = Column(Integer, index=True)
     win_total: int = Column(Integer)

@@ -5,7 +5,7 @@ from .heroes import Heroes
 class GameHeroes(Base):
     __tablename__ = 'game_heroes'
 
-    id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     game_id: int = Column(Integer, index=True)
     hero_id: int = Column(Integer, index=True)
     started_at: datetime = Column(DateTime, default=datetime.utcnow)

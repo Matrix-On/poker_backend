@@ -5,7 +5,7 @@ from .tournaments import Tournaments
 class TournamentBlinds(Base):
     __tablename__ = 'tournament_blinds'
 
-    id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     tournament_id: int = Column(Integer, index=True)
     blind_id: int = Column(Integer, index=True)
     created_at: datetime = Column(DateTime, default=datetime.utcnow)

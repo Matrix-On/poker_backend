@@ -27,7 +27,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data  # Хранение данных
     ports:
-      - "5433:5432"
+      - "5434:5432"
     container_name: postgres_db
 
 volumes:

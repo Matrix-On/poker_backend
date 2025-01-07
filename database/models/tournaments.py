@@ -3,7 +3,7 @@ from .types import *
 class Tournaments(Base):
     __tablename__ = 'tournaments'
 
-    id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name: str = Column(String)
     price_rebuy: int = Column(Integer, default=0)
     chip_count: int = Column(Integer, default=0)

@@ -3,7 +3,7 @@ from .types import *
 class Heroes(Base):
     __tablename__ = 'heroes'
 
-    id: int = Column(Integer, primary_key=True, index=True, autoincremented=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     fullname: str = Column(String)
     total_win: int = Column(Integer, default=0)
     total_lose: int = Column(Integer, default=0)
