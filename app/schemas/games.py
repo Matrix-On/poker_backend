@@ -13,7 +13,7 @@ class ActiveGamesSchema(BaseModel):
     break_minutes: int
 
 class ActiveGamesResponceSchema(StatusSchema):
-    data: List[ActiveGamesSchema] | None
+    data: List[ActiveGamesSchema]
 
 class HeroesSchema(BaseModel):
     id: int
@@ -27,9 +27,9 @@ class OperationsSchema(BaseModel):
     success_at: datetime
 
 class GameInfoResponceSchema(StatusSchema):
-    heroes: List[HeroesSchema] | None
-    operations: List[OperationsSchema] | None
-    game: ActiveGamesSchema | None
+    heroes: List[HeroesSchema]
+    operations: List[OperationsSchema]
+    game: ActiveGamesSchema
 
 class GameOperationRequestSchema(BaseModel):
     game_id: int

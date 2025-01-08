@@ -20,16 +20,16 @@ class GameHandler:
     async def get_active_games(self) -> ActiveGamesResponceSchema:
         try:
             result = await active_games(self.session)
-            if (result == None):
-                return ActiveGamesResponceSchema(status="None", code=205, data=None)
             data = [ActiveGamesSchema(**game) for game in result]
-            return ActiveGamesResponceSchema(status="ok", code=200, data=data)
+            return ActiveGamesResponceSchema(data=data)
         except HTTPException as e:
             return self.Error(message=str(e))
 
     async def get_game_info(self, game_id: int) -> GameInfoResponceSchema:
         try:
             game_info = await get_game_info(self.session, game_id)
+            if (not game_info):
+                return self.Error(message='Invalid request parameters')
             game_heroes = await get_game_heroes(self.session, game_id)
             game_operations = await get_game_operations(self.session, game_id)
 
@@ -37,8 +37,7 @@ class GameHandler:
             game_operations = [OperationsSchema(**go.__dict__) for go in game_operations]
             game_info = ActiveGamesSchema(**game_info)
 
-            return GameInfoResponceSchema(status="ok", code=200, tournament=game_info,
-                                          heroes=game_heroes, operations=game_operations)
+            return GameInfoResponceSchema(game=game_info, heroes=game_heroes, operations=game_operations)
         except HTTPException as e:
             return self.Error(message=str(e))
 
