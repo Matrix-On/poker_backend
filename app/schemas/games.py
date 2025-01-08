@@ -6,7 +6,7 @@ from .base import StatusSchema
 class ActiveGamesSchema(BaseModel):
     id: int
     name: str
-    started_at: datetime
+    started_at: datetime | None
     price_rebuy: int
     chip_count: int
     level_minutes: int
@@ -18,8 +18,8 @@ class ActiveGamesResponceSchema(StatusSchema):
 class HeroesSchema(BaseModel):
     id: int
     fullname: str
-    started_at: datetime
-    ended_at: datetime
+    started_at: datetime | None
+    ended_at: datetime | None
 
 class OperationsSchema(BaseModel):
     id: int
@@ -32,12 +32,18 @@ class GameInfoResponceSchema(StatusSchema):
     tournament: ActiveGamesSchema
 
 class GameOperationRequestSchema(BaseModel):
+    game_id: int
     operation: int
     success_at: datetime
 
 class HeroRequestSchema(BaseModel):
+    game_id: int
     hero_id: int
+    operation: int
     operation_datetime: datetime
 
 class NewGameRequestSchema(BaseModel):
     tournament_id: int
+
+class NewGameResponceSchema(StatusSchema):
+    game_id: int
