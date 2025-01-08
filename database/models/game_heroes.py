@@ -6,8 +6,8 @@ class GameHeroes(Base):
     __tablename__ = 'game_heroes'
 
     id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    game_id: int = Column(Integer, index=True, nullable=False)
-    hero_id: int = Column(Integer, index=True, nullable=False)
+    game_id: int = Column(Integer, ForeignKey('games.id'), index=True, nullable=False)
+    hero_id: int = Column(Integer, ForeignKey('heroes.id'), index=True, nullable=False)
     started_at: datetime = Column(DateTime, default=datetime.utcnow)
     ended_at: datetime = Column(DateTime, default=datetime.utcnow)
     created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)

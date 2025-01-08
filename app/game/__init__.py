@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .games import router as games_router
+from .routers import router as games_router
 
 api_games_router = APIRouter(prefix='/game', tags=["games"])
 

@@ -6,7 +6,7 @@ class GameOperations(Base):
     __tablename__ = 'game_operations'
 
     id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    game_id: int = Column(Integer, index=True, nullable=False)
+    game_id: int = Column(Integer, ForeignKey('games.id'), index=True, nullable=False)
     operation: GameOperations = Column("operation", Enum(GameOperations), nullable=False)
     success_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
     created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
