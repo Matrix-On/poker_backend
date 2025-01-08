@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.tournaments import router as tournaments_router
-from app.games import router as games_router
+from app.game.tournaments import router as tournaments_router
+from app import router
 
 app = FastAPI()
 
@@ -15,4 +15,4 @@ app.add_middleware(
 )
 
 app.include_router(tournaments_router, prefix='/game', tags=['tournaments'])
-app.include_router(games_router, prefix='/game', tags=['games'])
+app.include_router(router)

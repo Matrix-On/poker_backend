@@ -38,3 +38,6 @@ class GameOperationRequestSchema(BaseModel):
 class HeroRequestSchema(BaseModel):
     hero_id: int
     operation_datetime: datetime
+
+class NewGameRequestSchema(BaseModel):
+    tournament_id: int

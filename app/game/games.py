@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .schemas.games import ActiveGamesResponceSchema, ActiveGamesSchema, GameInfoResponceSchema, StatusSchema, GameOperationRequestSchema, HeroRequestSchema
+from ..schemas.games import ActiveGamesResponceSchema, ActiveGamesSchema, GameInfoResponceSchema, StatusSchema, GameOperationRequestSchema, HeroRequestSchema, NewGameRequestSchema
 from typing import List
 from datetime import datetime
 
@@ -32,4 +32,8 @@ async def set_rebuy_hero(request_data: HeroRequestSchema) -> StatusSchema:
 
 @router.post("/hero_end_game")
 async def set_hero_end_game(request_data: HeroRequestSchema) -> StatusSchema:
+    return StatusSchema(status="ok", code=200)
+
+@router.post("/new_game")
+async def set_new_game(request_data: NewGameRequestSchema) -> StatusSchema:
     return StatusSchema(status="ok", code=200)
