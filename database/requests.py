@@ -37,3 +37,10 @@ async def get_game_operations(session: AsyncSession, game_id: int):
     result = await session.execute(query)
     game_operations = result.fetchall()
     return game_operations
+
+async def create_new_game(session: AsyncSession, tournament_id: int) -> int:
+    game = Games()
+    game.tournament_id = tournament_id
+    session.add(game)
+    await session.commit()
+    return game.id

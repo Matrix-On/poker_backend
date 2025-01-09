@@ -2,7 +2,8 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.database import get_async_session
-from database.requests import active_games, get_game, get_game_info, get_game_operations, get_game_heroes
+from database.requests import active_games, get_game_info,\
+    get_game_operations, get_game_heroes, create_new_game
 from app.schemas.games import ActiveGamesResponceSchema, ActiveGamesSchema,\
         GameInfoResponceSchema, StatusSchema, GameOperationRequestSchema,\
         HeroRequestSchema, NewGameRequestSchema, NewGameResponceSchema,\
@@ -61,6 +62,9 @@ class GameHandler:
 
     async def set_new_game(self, request_data: NewGameRequestSchema) -> NewGameResponceSchema:
         try:
-            return ""
+            if (request_data.tournament_id < 1):
+                return self.Error(message='Invalid request parameters')
+            game_id = await create_new_game(self.session, request_data.tournament_id)
+            return NewGameResponceSchema(game_id=game_id)
         except HTTPException as e:
             return self.Error(message=str(e))

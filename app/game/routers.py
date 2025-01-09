@@ -28,6 +28,7 @@ async def set_rebuy_hero(request_data: HeroRequestSchema) -> StatusSchema:
 async def set_hero_end_game(request_data: HeroRequestSchema) -> StatusSchema:
     return StatusSchema(status="ok", code=200)
 
-@router.post("/new_game")
-async def set_new_game(request_data: NewGameRequestSchema) -> NewGameResponceSchema:
-    return NewGameResponceSchema(status="ok", code=200, game_id=request_data.tournament_id)
+@router.post("/new_game", responses={200:{"model" : NewGameResponceSchema}})
+async def set_new_game(request_data: NewGameRequestSchema,
+                       handler: Annotated[GameHandler, Depends(GameHandler)]) -> NewGameResponceSchema:
+    return await handler.set_new_game(request_data)

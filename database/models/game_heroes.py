@@ -8,8 +8,8 @@ class GameHeroes(Base):
     id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)
     game_id: int = Column(Integer, ForeignKey('games.id'), index=True, nullable=False)
     hero_id: int = Column(Integer, ForeignKey('heroes.id'), index=True, nullable=False)
-    started_at: datetime = Column(DateTime, default=datetime.utcnow)
-    ended_at: datetime = Column(DateTime, default=datetime.utcnow)
+    started_at: datetime = Column(DateTime)
+    ended_at: datetime = Column(DateTime)
     created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 

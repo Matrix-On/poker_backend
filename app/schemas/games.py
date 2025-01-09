@@ -26,10 +26,19 @@ class OperationsSchema(BaseModel):
     operation: int
     success_at: datetime
 
+class BlindsSchema(BaseModel):
+    level: int
+    small_blind: int
+    big_blind: int
+    ante: int
+
+class GameInfoSchema(ActiveGamesSchema):
+    blinds: List[BlindsSchema]
+
 class GameInfoResponceSchema(StatusSchema):
     heroes: List[HeroesSchema]
     operations: List[OperationsSchema]
-    game: ActiveGamesSchema
+    game: GameInfoSchema
 
 class GameOperationRequestSchema(BaseModel):
     game_id: int
