@@ -7,5 +7,5 @@ class Heroes(Base):
     fullname: str = Column(String, nullable=False)
     total_win: int = Column(Integer, default=0, nullable=False)
     total_lose: int = Column(Integer, default=0, nullable=False)
-    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at: datetime = Column(DateTime, default=datetime.now(timezone).replace(tzinfo=None), nullable=False)
+    updated_at: datetime = Column(DateTime, default=datetime.now(timezone).replace(tzinfo=None), onupdate=datetime.now(timezone).replace(tzinfo=None), nullable=False)

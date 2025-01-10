@@ -49,7 +49,6 @@ class HeroRequestSchema(BaseModel):
     game_id: int
     hero_id: int
     operation: int
-    operation_datetime: datetime
 
 class NewGameRequestSchema(BaseModel):
     tournament_id: int
