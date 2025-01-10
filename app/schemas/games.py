@@ -1,16 +1,21 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 from .base import StatusSchema
 
-class ActiveGamesSchema(BaseModel):
+class TournamentsSchema(BaseModel):
     id: int
     name: str
-    started_at: datetime | None
     price_rebuy: int
     chip_count: int
     level_minutes: int
     break_minutes: int
+
+class ActiveGamesSchema(TournamentsSchema):
+    started_at: datetime | None
+
+class TournamentsResponceSchema(StatusSchema):
+    data: List[TournamentsSchema]
 
 class ActiveGamesResponceSchema(StatusSchema):
     data: List[ActiveGamesSchema]
@@ -18,8 +23,13 @@ class ActiveGamesResponceSchema(StatusSchema):
 class HeroesSchema(BaseModel):
     id: int
     fullname: str
+
+class HeroesGameSchema(HeroesSchema):
     started_at: datetime | None
     ended_at: datetime | None
+
+class HeroesResponceSchema(StatusSchema):
+    data: List[HeroesSchema]
 
 class OperationsSchema(BaseModel):
     id: int
@@ -35,10 +45,13 @@ class BlindsSchema(BaseModel):
 class GameInfoSchema(ActiveGamesSchema):
     blinds: List[BlindsSchema]
 
-class GameInfoResponceSchema(StatusSchema):
-    heroes: List[HeroesSchema]
+class GameInfoDataSchema(BaseModel):
+    heroes: List[HeroesGameSchema]
     operations: List[OperationsSchema]
     game: GameInfoSchema
+
+class GameInfoResponceSchema(StatusSchema):
+    data: GameInfoDataSchema
 
 class GameOperationRequestSchema(BaseModel):
     game_id: int
@@ -55,3 +68,9 @@ class NewGameRequestSchema(BaseModel):
 
 class NewGameResponceSchema(StatusSchema):
     game_id: int
+
+class HeroesInGameSchema(HeroesGameSchema):
+    count_rebuy: int
+
+class HeroesInGameResponceSchema(StatusSchema):
+    data: List[HeroesInGameSchema]

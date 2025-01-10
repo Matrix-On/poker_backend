@@ -11,8 +11,34 @@ from .models.history_game_operations import HistoryGameOperations, HistoryGames
 from .models.history_game_heroes import HistoryGameHeroes
 from core.enums import GameOperationsEnum
 
+async def get_tournaments(session: AsyncSession):
+    query = select(Tournaments)
+    result = await session.execute(query)
+    tournaments = result.fetchall()
+    return tournaments
+
+async def get_heroes(session: AsyncSession):
+    query = select(Heroes).order_by(Heroes.id)
+    result = await session.execute(query)
+    heroes = result.fetchall()
+    return heroes
+
+async def get_heroes_in_game(session: AsyncSession, game_id: int):
+    query = text('SELECT h.id as id, MAX(fullname) as fullname,'
+                 ' MIN(started_at) as started_at, count(h.id) as count_rebuy,'
+                 ' CASE WHEN COUNT(ended_at) < COUNT(*) THEN NULL ELSE MAX(ended_at) END as ended_at'
+                 ' FROM game_heroes gh'
+                 ' INNER JOIN heroes h ON (h.id=gh.hero_id) '
+                 f' WHERE gh.game_id={game_id}'
+                 ' GROUP BY h.id'
+                 ' ORDER BY h.id ASC'
+                 )
+    result = await session.execute(query)
+    result = result.mappings().all()
+    return result
+
 async def active_games(session: AsyncSession) -> Sequence[RowMapping]:
-    query = text(f'SELECT gs.id, name, started_at, price_rebuy, chip_count, level_minutes, break_minutes FROM games gs INNER JOIN tournaments ts ON (gs.tournament_id=ts.id) WHERE gs.id=33')
+    query = text(f'SELECT gs.id, name, started_at, price_rebuy, chip_count, level_minutes, break_minutes FROM games gs INNER JOIN tournaments ts ON (gs.tournament_id=ts.id)')
     result = await session.execute(query)
     result = result.mappings().all()
     return result
@@ -78,7 +104,8 @@ async def update_game_hero_state(session: AsyncSession, game_id: int, hero_id: i
         return
     if (started_at):
         game_heroes.started_at=started_at.replace(tzinfo=None)
-    game_heroes.ended_at=ended_at.replace(tzinfo=None)
+    if (ended_at):
+        game_heroes.ended_at=ended_at.replace(tzinfo=None)
 
     await session.commit()
 
@@ -86,7 +113,8 @@ async def add_game_hero(session: AsyncSession, game_id: int, hero_id: int, start
     game_hero = GameHeroes()
     game_hero.game_id = game_id
     game_hero.hero_id = hero_id
-    game_hero.started_at = started_at.replace(tzinfo=None)
+    if (started_at):
+        game_hero.started_at = started_at.replace(tzinfo=None)
     session.add(game_hero)
     await session.commit()
     return game_hero.id
@@ -99,29 +127,35 @@ async def game_is_start(session: AsyncSession, game_id: int) -> bool:
         return False
     return True
 
-async def update_game_start(session: AsyncSession, game_id: int, started_at: datetime, commit: bool = True):
+async def update_game_start(session: AsyncSession, game_id: int, started_at: datetime, commit: bool = True) -> bool:
     query = select(GameHeroes).options(selectinload(GameHeroes.games)).where(GameHeroes.game_id==game_id)
     result = await session.execute(query)
     game_heroes = result.scalars().all()
+    if (len(game_heroes) == 0):
+        return False
     game_heroes[0].games.started_at=started_at
     for hero in game_heroes:
         if not hero.started_at:
             hero.started_at=started_at
     if commit:
         await session.commit()
+    return True
 
-async def update_game_end(session: AsyncSession, game_id: int, ended_at: datetime, commit: bool = True):
+async def update_game_end(session: AsyncSession, game_id: int, ended_at: datetime, commit: bool = True) -> bool:
     query = select(GameHeroes).options(selectinload(GameHeroes.games)).where(GameHeroes.game_id==game_id)
     result = await session.execute(query)
     game_heroes = result.scalars().all()
+    if (len(game_heroes) == 0):
+        return False
     game_heroes[0].games.ended_at=ended_at
     for hero in game_heroes:
         if not hero.ended_at:
             hero.ended_at=ended_at
     if commit:
         await session.commit()
+    return True
 
-async def add_game_opertaion(session: AsyncSession, game_id: int, opertaion: GameOperations, success_at: datetime, commit: bool = True) -> int:
+async def add_game_opertaion(session: AsyncSession, game_id: int, opertaion: GameOperationsEnum, success_at: datetime, commit: bool = True) -> int:
     game_operation = GameOperations()
     game_operation.game_id = game_id
     game_operation.operation = opertaion
