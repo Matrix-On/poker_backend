@@ -7,12 +7,19 @@ class TournamentsSchema(BaseModel):
     id: int
     name: str
     price_rebuy: int
+    currency: str
     chip_count: int
     level_minutes: int
     break_minutes: int
+    break_after_level: int
 
 class ActiveGamesSchema(TournamentsSchema):
     started_at: datetime | None
+    total_chips: int
+    total_pot: int
+    entries: int
+    players_in: int
+    level: int
 
 class TournamentsResponceSchema(StatusSchema):
     data: List[TournamentsSchema]

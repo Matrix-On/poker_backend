@@ -82,7 +82,7 @@ class GameHandler:
     async def set_game_operation(self, request_data: GameOperationRequestSchema) -> StatusSchema:
         try:
             if (request_data.operation < GameOperationsEnum.start.value
-                and request_data.operation > GameOperationsEnum.time_break.value):
+                and request_data.operation > GameOperationsEnum.end_time_break.value):
                 return self.InvalidRequestParameters()
 
             await self.session.begin()
