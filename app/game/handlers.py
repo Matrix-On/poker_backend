@@ -2,7 +2,6 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 from core.timezone import timezone
-from typing import List
 
 from database.database import get_async_session
 from database.requests import active_games, get_game_info,\
