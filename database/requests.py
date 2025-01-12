@@ -37,19 +37,37 @@ async def get_heroes_in_game(session: AsyncSession, game_id: int):
     result = result.mappings().all()
     return result
 
+def __query_get_game_info__(game_id: int | None = None):
+    where_query = ''
+    if game_id:
+        where_query = f' WHERE gs.id={game_id}'
+    query = text(f'SELECT gs.id, name, gs.started_at, price_rebuy, chip_count, level_minutes, break_minutes,'
+                 ' currency, break_after_level,'
+                 ' COUNT(gh.id)*price_rebuy as total_pot,'
+                 ' COUNT(gh.id)*chip_count as total_chips,'
+                 ' COUNT(gh.id) as entries,'
+                 ' COUNT(gh.id)-COUNT(gh.ended_at) as players_in,'
+                 ' coalesce(go.cnt + 1, 0) as level'
+                 ' FROM games gs'
+                 ' INNER JOIN tournaments ts ON (gs.tournament_id=ts.id)'
+                 ' LEFT JOIN game_heroes gh ON (gh.game_id=gs.id)'
+                 ' LEFT JOIN (SELECT COUNT(*) as cnt, game_id FROM game_operations'
+ 				 '            WHERE operation=\'next_level\'::GameOperationsEnum'
+ 				 '            GROUP BY game_id) go ON (go.game_id=gs.id)'
+                 + where_query +
+                 ' GROUP BY gs.id, name, gs.started_at, price_rebuy, chip_count, level_minutes, break_minutes, go.cnt'
+                 ' ORDER BY gs.id'
+                )
+    return query
+
 async def active_games(session: AsyncSession) -> Sequence[RowMapping]:
-    query = text(f'SELECT gs.id, name, started_at, price_rebuy, chip_count, level_minutes, break_minutes FROM games gs INNER JOIN tournaments ts ON (gs.tournament_id=ts.id)')
+    query = __query_get_game_info__()
     result = await session.execute(query)
     result = result.mappings().all()
     return result
 
 async def get_game_info(session: AsyncSession, game_id: int):
-    query = text('SELECT gs.id, name, started_at, price_rebuy,'
-                 ' chip_count, level_minutes, break_minutes '
-                 ' FROM games gs'
-                 ' INNER JOIN tournaments ts ON (gs.tournament_id=ts.id) '
-                 f' WHERE gs.id={game_id}'
-                 )
+    query = __query_get_game_info__(game_id)
     result = await session.execute(query)
     result = result.mappings().first()
     return result

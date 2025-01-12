@@ -1,8 +1,8 @@
 """init
 
-Revision ID: f7d3a724e55a
+Revision ID: 0cd107439199
 Revises: 
-Create Date: 2025-01-10 13:44:43.471749
+Create Date: 2025-01-11 02:20:08.905544
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f7d3a724e55a'
+revision: str = '0cd107439199'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -44,9 +44,11 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('price_rebuy', sa.Integer(), nullable=False),
+    sa.Column('currency', sa.Enum('byn', 'usd', 'eur', 'rub', name='currencyenum'), nullable=False),
     sa.Column('chip_count', sa.Integer(), nullable=False),
     sa.Column('level_minutes', sa.Integer(), nullable=False),
     sa.Column('break_minutes', sa.Integer(), nullable=False),
+    sa.Column('break_after_level', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
@@ -110,7 +112,7 @@ def upgrade() -> None:
     op.create_table('game_operations',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('game_id', sa.Integer(), nullable=False),
-    sa.Column('operation', sa.Enum('start', 'end', 'pause', 'unpause', 'next_level', 'time_break', name='gameoperationsenum'), nullable=False),
+    sa.Column('operation', sa.Enum('start', 'end', 'pause', 'unpause', 'next_level', 'time_break', 'end_time_break', name='gameoperationsenum'), nullable=False),
     sa.Column('success_at', sa.DateTime(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
@@ -137,7 +139,7 @@ def upgrade() -> None:
     op.create_table('history_game_operations',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('history_game_id', sa.Integer(), nullable=False),
-    sa.Column('operation', sa.Enum('start', 'end', 'pause', 'unpause', 'next_level', 'time_break', name='gameoperationsenum'), nullable=False),
+    sa.Column('operation', sa.Enum('start', 'end', 'pause', 'unpause', 'next_level', 'time_break', 'end_time_break', name='gameoperationsenum'), nullable=False),
     sa.Column('success_at', sa.DateTime(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
