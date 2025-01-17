@@ -55,7 +55,7 @@ def __query_get_game_info__(game_id: int | None = None):
  				 '            WHERE operation=\'next_level\'::GameOperationsEnum'
  				 '            GROUP BY game_id) go ON (go.game_id=gs.id)'
                  + where_query +
-                 ' GROUP BY gs.id, name, gs.started_at, price_rebuy, chip_count, level_minutes, break_minutes, go.cnt'
+                 ' GROUP BY gs.id, name, gs.started_at, price_rebuy, chip_count, level_minutes, break_minutes, go.cnt, currency, break_after_level'
                  ' ORDER BY gs.id'
                 )
     return query
