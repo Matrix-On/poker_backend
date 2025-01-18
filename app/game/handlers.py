@@ -8,7 +8,7 @@ from database.requests import active_games, get_game_info,\
     get_game_operations, get_game_heroes, create_new_game, get_blinds_info,\
     add_game_hero, update_game_hero_state, game_is_start, update_game_start,\
     add_game_opertaion, update_game_end, move_game_to_history, get_tournaments,\
-    get_heroes, get_heroes_in_game
+    get_heroes, get_heroes_in_game, move_game_expired
 from app.schemas.games import ActiveGamesResponceSchema, ActiveGamesSchema,\
         GameInfoResponceSchema, StatusSchema, GameOperationRequestSchema,\
         HeroRequestSchema, NewGameRequestSchema, NewGameResponceSchema,\
@@ -81,7 +81,7 @@ class GameHandler:
     async def set_game_operation(self, request_data: GameOperationRequestSchema) -> StatusSchema:
         try:
             if (request_data.operation < GameOperationsEnum.start.value
-                and request_data.operation > GameOperationsEnum.end_time_break.value):
+                and request_data.operation > GameOperationsEnum.expired.value):
                 return self.InvalidRequestParameters()
 
             await self.session.begin()
@@ -98,6 +98,8 @@ class GameHandler:
                     await self.session.rollback()
                     return StatusSchema(status='Нет игроков в игре', code=205)
                 await move_game_to_history(self.session, request_data.game_id, False)
+            elif (request_data.operations == GameOperationsEnum.expired.value):
+                await move_game_expired(self.session, request_data.game_id, request_data.success_at.replace(tzinfo=None), False)
 
             await self.session.commit()
 

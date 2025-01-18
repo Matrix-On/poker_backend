@@ -23,6 +23,12 @@ async def get_heroes(session: AsyncSession):
     heroes = result.fetchall()
     return heroes
 
+async def get_hero(session: AsyncSession, hero_id: int) -> Heroes | None:
+    query = select(Heroes).where(Heroes.id==hero_id)
+    result = await session.execute(query)
+    hero = result.scalar()
+    return hero
+
 async def get_heroes_in_game(session: AsyncSession, game_id: int):
     query = text('SELECT h.id as id, MAX(fullname) as fullname,'
                  ' MIN(started_at) as started_at, count(h.id) as count_rebuy,'
@@ -191,7 +197,7 @@ async def get_game_operation_objects(session: AsyncSession, game_id: int) -> Seq
     return game_operations
 
 async def get_game_heroes_objects(session: AsyncSession, game_id: int) -> Sequence[GameHeroes]:
-    query = select(GameHeroes).where(GameHeroes.game_id==game_id)
+    query = select(GameHeroes).options(selectinload(GameHeroes.heroes)).where(GameHeroes.game_id==game_id)
     result = await session.execute(query)
     game_heroes = result.scalars().all()
     return game_heroes
@@ -229,17 +235,59 @@ async def move_game_to_history(session: AsyncSession, game_id: int, commit: bool
         await session.delete(g_o)
         session.add(history_game_opertaions)
 
+    is_update = False
     for g_h in game_heroes:
         history_game_heroes = HistoryGameHeroes()
         history_game_heroes.history_game_id = history_game.id
         history_game_heroes.hero_id = g_h.hero_id
         history_game_heroes.started_at = g_h.started_at
         history_game_heroes.ended_at = g_h.ended_at
+        g_h.heroes.total_lose += game.tournaments.price_rebuy
+        if (g_h.hero_id == history_game.win_hero_id and not is_update):
+            is_update = True
+            g_h.heroes.total_win += history_game.win_total
         await session.delete(g_h)
         session.add(history_game_heroes)
 
+    await session.delete(game)
+
+    if (commit):
+        session.commit()
+    return history_game.id
+
+
+async def move_game_expired(session: AsyncSession, game_id: int, success_at: datetime, commit: bool = True) -> int:
+    game = await get_game_objets(session, game_id)
+    game_heroes = await get_game_heroes_objects(session, game_id)
+
+    history_game = HistoryGames()
+    history_game.tournament_id = game.tournament_id
+    history_game.started_at = game.started_at
+    history_game.ended_at = success_at
+    history_game.win_hero_id = 0
+    history_game.win_total = 0
+    session.add(history_game)
+
+    game_operations = await get_game_operation_objects(session, game_id)
+    for g_o in game_operations:
+        history_game_opertaions = HistoryGameOperations()
+        history_game_opertaions.history_game_id = history_game.id
+        history_game_opertaions.operation = g_o.operation
+        history_game_opertaions.success_at = g_o.success_at
+        await session.delete(g_o)
+        session.add(history_game_opertaions)
+
+    for g_h in game_heroes:
+        history_game_heroes = HistoryGameHeroes()
+        history_game_heroes.history_game_id = history_game.id
+        history_game_heroes.hero_id = g_h.hero_id
+        history_game_heroes.started_at = g_h.started_at
+        history_game_heroes.ended_at = g_h.ended_at if g_h.ended_at else success_at
+        await session.delete(g_h)
+        session.add(history_game_heroes)
 
     await session.delete(game)
+
     if (commit):
         session.commit()
     return history_game.id
