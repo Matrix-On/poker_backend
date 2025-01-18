@@ -262,7 +262,7 @@ async def move_game_expired(session: AsyncSession, game_id: int, success_at: dat
 
     history_game = HistoryGames()
     history_game.tournament_id = game.tournament_id
-    history_game.started_at = game.started_at
+    history_game.started_at = game.started_at if game.started_at else success_at
     history_game.ended_at = success_at
     history_game.win_hero_id = 0
     history_game.win_total = 0
