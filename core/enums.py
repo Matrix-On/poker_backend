@@ -8,6 +8,7 @@ class GameOperationsEnum(enum.Enum):
     next_level = 5
     time_break = 6
     end_time_break = 7
+    expired = 8
 
 class CurrencyEnum(str, enum.Enum):
     byn = 'BYN'
