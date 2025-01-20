@@ -53,7 +53,7 @@ def __query_get_game_info__(game_id: int | None = None):
                  ' COUNT(gh.id)*chip_count as total_chips,'
                  ' COUNT(gh.id) as entries,'
                  ' COUNT(gh.id)-COUNT(gh.ended_at) as players_in,'
-                 ' coalesce(go.cnt, 0) as level'
+                 ' coalesce(go.cnt, 1) as level'
                  ' FROM games gs'
                  ' INNER JOIN tournaments ts ON (gs.tournament_id=ts.id)'
                  ' LEFT JOIN game_heroes gh ON (gh.game_id=gs.id)'
