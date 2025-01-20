@@ -98,7 +98,7 @@ class GameHandler:
                     await self.session.rollback()
                     return StatusSchema(status='Нет игроков в игре', code=205)
                 await move_game_to_history(self.session, request_data.game_id, False)
-            elif (request_data.operations == GameOperationsEnum.expired.value):
+            elif (request_data.operation == GameOperationsEnum.expired.value):
                 await move_game_expired(self.session, request_data.game_id, request_data.success_at.replace(tzinfo=None), False)
 
             await self.session.commit()
