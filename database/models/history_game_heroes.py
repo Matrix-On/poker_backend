@@ -10,8 +10,8 @@ class HistoryGameHeroes(Base):
     hero_id: int = Column(Integer, ForeignKey('heroes.id'), index=True, nullable=False)
     started_at: datetime = Column(DateTime, nullable=False)
     ended_at: datetime = Column(DateTime, nullable=False)
-    created_at: datetime = Column(DateTime, default=datetime.now(timezone).replace(tzinfo=None), nullable=False)
-    updated_at: datetime = Column(DateTime, default=datetime.now(timezone).replace(tzinfo=None), onupdate=datetime.now(timezone).replace(tzinfo=None), nullable=False)
+    created_at: datetime = Column(DateTime, default=datetime.now(timezone()).replace(tzinfo=None), nullable=False)
+    updated_at: datetime = Column(DateTime, default=datetime.now(timezone()).replace(tzinfo=None), onupdate=datetime.now(timezone()).replace(tzinfo=None), nullable=False)
 
     history_games: Mapped[HistoryGames] = relationship(HistoryGames)
     heroes: Mapped[Heroes] = relationship(Heroes)

@@ -9,7 +9,7 @@ class GameOperations(Base):
     game_id: int = Column(Integer, ForeignKey('games.id'), index=True, nullable=False)
     operation: GameOperationsEnum = Column("operation", Enum(GameOperationsEnum), nullable=False)
     success_at: datetime = Column(DateTime, nullable=False)
-    created_at: datetime = Column(DateTime, default=datetime.now(timezone).replace(tzinfo=None), nullable=False)
-    updated_at: datetime = Column(DateTime, default=datetime.now(timezone).replace(tzinfo=None), onupdate=datetime.now(timezone).replace(tzinfo=None), nullable=False)
+    created_at: datetime = Column(DateTime, default=datetime.now(timezone()).replace(tzinfo=None), nullable=False)
+    updated_at: datetime = Column(DateTime, default=datetime.now(timezone()).replace(tzinfo=None), onupdate=datetime.now(timezone()).replace(tzinfo=None), nullable=False)
 
     games: Mapped[Games] = relationship(Games)

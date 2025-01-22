@@ -1,3 +1,4 @@
 import pytz
 
-timezone = pytz.timezone('Europe/Minsk')
+def timezone():
+    return pytz.timezone('Europe/Minsk')

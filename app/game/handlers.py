@@ -110,7 +110,7 @@ class GameHandler:
 
     async def set_rebuy_hero(self, request_data: HeroRequestSchema) -> StatusSchema:
         try:
-            current_time = datetime.now(timezone).replace(tzinfo=None)
+            current_time = datetime.now(timezone()).replace(tzinfo=None)
             if (not await game_is_start(self.session, request_data.game_id)):
                 current_time = None
             if (request_data.operation == HeroOpertaionsEnum.rebuy.value):
