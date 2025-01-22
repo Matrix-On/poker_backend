@@ -47,9 +47,9 @@ def __query_get_game_info__(game_id: int | None = None):
     where_query = ''
     if game_id:
         where_query = f' WHERE gs.id={game_id}'
-    query = text(f'SELECT gs.id, name, gs.started_at, price_rebuy, chip_count, level_minutes, break_minutes,'
+    query = text(f'SELECT gs.id, name, gs.started_at, price_rebuy, guaranteed_amount, chip_count, level_minutes, break_minutes,'
                  ' currency, break_after_level,'
-                 ' COUNT(gh.id)*price_rebuy as total_pot,'
+                 ' (COUNT(gh.id)*price_rebuy + guaranteed_amount) as total_pot,'
                  ' COUNT(gh.id)*chip_count as total_chips,'
                  ' COUNT(gh.id) as entries,'
                  ' COUNT(gh.id)-COUNT(gh.ended_at) as players_in,'
@@ -62,7 +62,7 @@ def __query_get_game_info__(game_id: int | None = None):
                  '              OR operation=\'start\'::GameOperationsEnum'
  				 '            GROUP BY game_id) go ON (go.game_id=gs.id)'
                  + where_query +
-                 ' GROUP BY gs.id, name, gs.started_at, price_rebuy, chip_count, level_minutes, break_minutes, go.cnt, currency, break_after_level'
+                 ' GROUP BY gs.id, name, gs.started_at, price_rebuy, guaranteed_amount, chip_count, level_minutes, break_minutes, go.cnt, currency, break_after_level'
                  ' ORDER BY gs.id'
                 )
     return query

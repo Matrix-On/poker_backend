@@ -7,6 +7,7 @@ class TournamentsSchema(BaseModel):
     id: int
     name: str
     price_rebuy: int
+    guaranteed_amount: int
     currency: str
     chip_count: int
     level_minutes: int
